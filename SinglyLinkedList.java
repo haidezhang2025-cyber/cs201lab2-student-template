@@ -101,89 +101,37 @@ public class SinglyLinkedList<E extends Comparable<E>> {
 
     // write your codes here
     public void swap() {
-        List<E> sortedList = new ArrayList<>();
+        if (size < 2) {
+            return;
+        }
+
+        List<E> originalList = new ArrayList<>();
         Node<E> walk = head;
 
         while (walk != null) {
-            sortedList.add(walk.getElement());
+            originalList.add(walk.getElement());
             walk = walk.getNext();
         }
 
+        List<E> sortedList = new ArrayList<>(originalList);
         Collections.sort(sortedList);
 
-        for (int i = 0; i < sortedList.size() / 2; i++) {
-            if (sortedList.get(i) == sortedList.get(sortedList.size() - i - 1)) {
-                break;
-            }
+        Map<E, E> swapMap = new HashMap<>();
 
-            Node<E> Lwalk = head;
-            Node<E> Lprev = null;
-            Node<E> Lnext = Lwalk.getNext();
-            Node<E> Swalk = head;
-            Node<E> Sprev = null;
-            Node<E> Snext = Swalk.getNext();
-
-            while (Lwalk.getElement() != sortedList.get(i)) {
-                Lprev = Lwalk;
-                Lwalk = Lwalk.getNext();
-                Lnext = Lwalk.getNext();
-            }
-
-            while (Swalk.getElement() != sortedList.get(sortedList.size() - i - 1)) {
-                Sprev = Swalk;
-                Swalk = Swalk.getNext();
-                Snext = Swalk.getNext();
-            }
-
-            if (Lnext == Swalk) {
-
-                if (Lprev != null) {
-                    Lprev.setNext(Swalk);
-                } else {
-                    head = Swalk;
-                }
-
-                Lwalk.setNext(Snext);
-                Swalk.setNext(Lwalk);
-            } else if (Snext == Lwalk) {
-
-                if (Sprev != null) {
-                    Sprev.setNext(Lwalk);
-                } else {
-                    head = Lwalk;
-                }
-
-                Swalk.setNext(Lnext);
-                Lwalk.setNext(Swalk);
-
-            } else {
-
-                if (Lprev != null) {
-                    Lprev.setNext(Swalk);
-                } else {
-                    head = Swalk;
-                }
-
-                if (Sprev != null) {
-                    Sprev.setNext(Lwalk);
-                } else {
-                    head = Lwalk;
-                }
-
-                Lwalk.setNext(Snext);
-                Swalk.setNext(Lnext);
-            }
-
-            if (Lwalk.getNext() == null) {
-                tail = Lwalk;
-            }
-
-            if (Swalk.getNext() == null) {
-                tail = Swalk;
-            }
-
+        for (int i = 0; i < sortedList.size(); i++) {
+            swapMap.put(
+                sortedList.get(i),
+                sortedList.get(sortedList.size() - 1 - i)
+            );
         }
 
+        head = null;
+        tail = null;
+        size = 0;
+
+        for (E value : originalList) {
+            addLast(swapMap.get(value));
+        }
     }
 
 }
